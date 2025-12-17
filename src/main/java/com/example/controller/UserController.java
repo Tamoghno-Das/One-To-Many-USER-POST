@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.UserDto;
 import com.example.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto)
     {
         UserDto savedUser = userService.addUser(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id)
+    public ResponseEntity<UserDto> getUserById(@Valid @PathVariable Long id)
     {
         return ResponseEntity.ok(userService.getUser(id));
     }
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> updateUser(@Valid @PathVariable Long id, @RequestBody UserDto userDto)
     {
         return ResponseEntity.ok(userService.updateUser(userDto,id));
 

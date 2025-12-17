@@ -54,11 +54,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
-        if(id == null || id<=0)
-        {
-            throw new ResourceNotFoundException("User not found with id: "+id);
-
-        }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserBadRequestException("DATA INSUFFICIENT!!!"));
 

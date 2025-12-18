@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,6 +29,9 @@ public class User
     @Column(nullable = false, unique = true)
     @Email
     String email;
+
+    @OneToMany(mappedBy = "user",orphanRemoval = true,cascade = CascadeType.ALL)
+    List<Post> post;
 
 
 

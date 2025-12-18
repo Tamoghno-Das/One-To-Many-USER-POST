@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name="posts")
+@Table(name="posttest")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +31,17 @@ public class Post {
     @NotNull()
     @Column(name = "content",length = 200)
     String content;
+
+    @CreationTimestamp
+    @NotBlank
+    LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @NotBlank
+    LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_user_id",nullable = false)
+    User user;
 
 }

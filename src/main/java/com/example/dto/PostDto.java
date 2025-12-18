@@ -1,19 +1,22 @@
 package com.example.dto;
 
-import com.example.entity.Post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
-public class UserDto {
+public class PostDto {
     Long id;
-    String firstName;
-    String lastName;
-    String email;
-    Post post;
+    String title;
+    String description;
+    String content;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    Long PostUserId;
+
 }

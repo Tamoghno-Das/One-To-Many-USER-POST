@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-
 public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -17,6 +16,8 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserBadRequestException.class)
     public ErrorResponse handleBadRequestException(UserBadRequestException ex)
     {
         return new ErrorResponse(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage());

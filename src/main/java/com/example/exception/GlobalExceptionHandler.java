@@ -16,10 +16,10 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(UserBadRequestException.class)
     public ErrorResponse handleBadRequestException(UserBadRequestException ex)
     {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST,ex.getLocalizedMessage());
+        return new ErrorResponse(HttpStatus.FORBIDDEN,ex.getLocalizedMessage());
     }
 }

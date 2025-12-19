@@ -4,6 +4,8 @@ import com.example.entity.Post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,5 +17,5 @@ public class UserDto {
     String firstName;
     String lastName;
     String email;
-    Post post;
+    List<PostDto> posts;
 }

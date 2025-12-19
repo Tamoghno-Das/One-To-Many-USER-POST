@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -31,6 +32,7 @@ public class User
     String email;
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<Post> post;
 
 

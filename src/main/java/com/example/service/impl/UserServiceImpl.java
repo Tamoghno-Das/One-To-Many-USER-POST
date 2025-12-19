@@ -1,8 +1,10 @@
 package com.example.service.impl;
+
+import com.example.dto.PostDto;
 import com.example.dto.UserDto;
 import com.example.entity.User;
-import com.example.exception.UserBadRequestException;
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.UserBadRequestException;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
 import lombok.AccessLevel;
@@ -11,68 +13,91 @@ import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-   UserRepository userRepository;
-   ModelMapper modelMapper;
+    UserRepository userRepository;
+    ModelMapper modelMapper;
 
     @Override
     public UserDto addUser(UserDto userDto) {
 
         User user = modelMapper.map(userDto, User.class);
-
         User savedUser = userRepository.save(user);
 
-        UserDto savedUserDto = modelMapper.map(savedUser, UserDto.class);
-
-        return savedUserDto;
+        return mapUserToDto(savedUser);
     }
 
     @Override
     public UserDto getUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Resource Not Found with ID: "+id));
 
-        return modelMapper.map(user, UserDto.class);
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id));
+
+        return mapUserToDto(user);
     }
 
     @Override
     public List<UserDto> getAllUser() {
 
-        List<User> users = userRepository.findAll();
-
-        return users.stream().map(
-                        (user) -> modelMapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapUserToDto)
+                .toList();
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
+
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserBadRequestException("DATA INSUFFICIENT!!!"));
+                .orElseThrow(() ->
+                        new UserBadRequestException("User not found with id: " + id));
 
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
 
-        User updatedUser = userRepository.save(user); // update
-        return modelMapper.map(updatedUser, UserDto.class);
+        User updatedUser = userRepository.save(user);
+        return mapUserToDto(updatedUser);
     }
 
     @Override
     public String deleteUser(Long id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id));
 
-        userRepository.deleteById(id);
+        userRepository.delete(user);
+        return "Successfully deleted user with id " + id;
+    }
 
-        return "Succesfully Deleted id"+id;
+    private UserDto mapUserToDto(User user) {
+
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+
+        userDto.setPosts(userDto.getPosts());
+
+        if (user.getPost() != null && !user.getPost().isEmpty()) {
+
+            List<PostDto> postDtos = user.getPost()
+                    .stream()
+                    .map(post -> {
+                        PostDto dto = modelMapper.map(post, PostDto.class);
+                        dto.setUserId(user.getId());
+                        return dto;
+                    })
+                    .toList();
+
+            userDto.setPosts(postDtos);
+        }
+
+        return userDto;
     }
 }

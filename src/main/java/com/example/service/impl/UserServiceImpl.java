@@ -11,6 +11,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     UserRepository userRepository;
     ModelMapper modelMapper;
@@ -99,5 +102,13 @@ public class UserServiceImpl implements UserService {
         }
 
         return userDto;
+    }
+
+    // USED TO LOAD THE USER BY EMAIL OR USERNAME (SPRING SECURITY)
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username).
+                orElseThrow(() -> new ResourceNotFoundException("User with email "+username+" not found"));
     }
 }
